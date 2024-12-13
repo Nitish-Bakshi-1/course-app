@@ -37,8 +37,23 @@ router.get("/courses", async (req, res) => {
   }
 });
 
-router.post("/courses/:courseId", userMiddleware, (req, res) => {
+router.post("/courses/:courseId", userMiddleware, async (req, res) => {
   // Implement course purchase logic
+  const id = req.params.courseId;
+  const username = req.headers.username;
+  const user = await User.updateOne(
+    {
+      username,
+    },
+    {
+      $push: {
+        purchasedCourses: id,
+      },
+    }
+  );
+  res.json({
+    msg: "purchase completed",
+  });
 });
 
 router.get("/purchasedCourses", userMiddleware, (req, res) => {

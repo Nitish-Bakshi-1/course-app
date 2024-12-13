@@ -33,6 +33,7 @@ const UserSchema = new mongoose.Schema({
   purchasedCourses: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Course",
+    unique: true,
   },
 });
 
