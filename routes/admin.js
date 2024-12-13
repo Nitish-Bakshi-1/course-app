@@ -33,9 +33,7 @@ router.post("/signin", async function (req, res) {
   try {
     const username = req.body.username;
     const password = req.body.password;
-
     const admin = Admin.find({ username, password });
-
     if (!admin) {
       res.json({
         msg: "admin not found",
@@ -77,7 +75,6 @@ router.post("/courses", adminMiddleware, (req, res) => {
 });
 
 router.get("/courses", adminMiddleware, async (req, res) => {
-  // Implement fetching all courses logic
   const courses = await Course.find();
 
   res.json(courses);
