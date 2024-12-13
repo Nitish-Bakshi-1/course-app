@@ -2,10 +2,10 @@ const { Router } = require("express");
 const adminMiddleware = require("../middleware/admin");
 const router = Router();
 const { Admin, Course } = require("../db/index");
+const { JWT_SECRET } = require("../config");
+const jwt = require("jsonwebtoken");
 
-// Admin Routes
 router.post("/signup", (req, res) => {
-  // Implement admin signup logic
   try {
     const username = req.body.username;
     const password = req.body.password;
@@ -29,8 +29,28 @@ router.post("/signup", (req, res) => {
   }
 });
 
+router.post("/signin", async function (req, res) {
+  try {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    const admin = Admin.find({ username, password });
+
+    if (!admin) {
+      res.json({
+        msg: "admin not found",
+      });
+    }
+    const token = jwt.sign({ username: username }, JWT_SECRET);
+    res.json({
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 router.post("/courses", adminMiddleware, (req, res) => {
-  // Implement course creation logic
   try {
     const { title, description, price, imageLink } = req.body;
 

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { JWT_SECRET } = require("../index.js");
+const { JWT_SECRET } = require("../config");
 
 function adminMiddleware(req, res, next) {
   const token = req.headers.authorization;
@@ -7,9 +7,9 @@ function adminMiddleware(req, res, next) {
   const jwt_token = words[1];
 
   const verification = jwt.verify(jwt_token, JWT_SECRET);
-  if (!verification.username) {
+  if (!verification) {
     res.json({
-      message: "(Admin) authorization failed",
+      message: "(Admin) authentication failed",
     });
   } else {
     next();
