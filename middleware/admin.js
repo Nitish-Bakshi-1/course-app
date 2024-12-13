@@ -7,7 +7,8 @@ function adminMiddleware(req, res, next) {
   const jwt_token = words[1];
 
   const verification = jwt.verify(jwt_token, JWT_SECRET);
-  console.log(verification);
+  console.log(verification.username);
+
   if (!verification) {
     res.json({
       message: "(Admin) authentication failed",

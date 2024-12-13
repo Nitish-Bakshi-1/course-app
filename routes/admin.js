@@ -33,16 +33,18 @@ router.post("/signin", async function (req, res) {
   try {
     const username = req.body.username;
     const password = req.body.password;
-    const admin = Admin.find({ username, password });
+    const admin = await Admin.findOne({ username });
     if (!admin) {
       res.json({
         msg: "admin not found",
       });
     }
-    const token = jwt.sign({ username: username }, JWT_SECRET);
-    res.json({
-      token,
-    });
+    const token = jwt.sign({ username }, JWT_SECRET);
+    if (token) {
+      res.json({
+        token,
+      });
+    }
   } catch (error) {
     console.log(error);
   }
