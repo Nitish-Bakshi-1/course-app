@@ -2,10 +2,10 @@ const { Router } = require("express");
 const router = Router();
 const userMiddleware = require("../middleware/user");
 const { User, Course } = require("../db/index");
+const { JWT_SECRET } = require("../config");
+const jwt = require("jsonwebtoken");
 
-// User Routes
 router.post("/signup", (req, res) => {
-  // Implement user signup logic
   const username = req.body.username;
   const password = req.body.password;
 
@@ -25,8 +25,27 @@ router.post("/signup", (req, res) => {
   });
 });
 
+router.post("/signin", async function (req, res) {
+  const { username, password } = req.body;
+
+  const user = await User.findOne(username, password);
+  if (user) {
+    const token = jwt.sign({ username: username }, JWT_SECRET);
+
+    if (!token) {
+      res.json({
+        messge: "no token",
+      });
+      res.json({ token });
+    }
+  } else {
+    res.json({
+      message: "user not found",
+    });
+  }
+});
+
 router.get("/courses", async (req, res) => {
-  // Implement listing all courses logic
   try {
     const response = await Course.find();
     res.json({
@@ -38,9 +57,8 @@ router.get("/courses", async (req, res) => {
 });
 
 router.post("/courses/:courseId", userMiddleware, async (req, res) => {
-  // Implement course purchase logic
   const id = req.params.courseId;
-  const username = req.headers.username;
+  const username = req.username;
   const user = await User.updateOne(
     {
       username,
@@ -57,7 +75,6 @@ router.post("/courses/:courseId", userMiddleware, async (req, res) => {
 });
 
 router.get("/purchasedCourses", userMiddleware, async (req, res) => {
-  // Implement fetching purchased courses logic
   const user = await User.findOne({
     username: req.headers.username,
   });
