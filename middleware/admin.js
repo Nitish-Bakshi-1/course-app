@@ -8,7 +8,6 @@ function adminMiddleware(req, res, next) {
 
   if (words.length === 2 && words[1] === "Bearer") {
     const verification = jwt.verify(jwt_token, JWT_SECRET);
-
     if (!verification) {
       res.json({
         message: "(Admin) authentication failed",

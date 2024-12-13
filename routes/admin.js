@@ -33,13 +33,16 @@ router.post("/signin", async function (req, res) {
   try {
     const username = req.body.username;
     const password = req.body.password;
-    const admin = await Admin.findOne({ username });
+    const admin = await Admin.findOne({
+      username,
+      password,
+    });
     if (!admin) {
       res.json({
         msg: "admin not found",
       });
     }
-    const token = jwt.sign({ username }, JWT_SECRET);
+    const token = jwt.sign({ username: username }, JWT_SECRET);
     if (token) {
       res.json({
         token,
@@ -77,8 +80,7 @@ router.post("/courses", adminMiddleware, (req, res) => {
 });
 
 router.get("/courses", adminMiddleware, async (req, res) => {
-  const courses = await Course.find();
-
+  const courses = await Course.find({});
   res.json(courses);
 });
 
