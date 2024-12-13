@@ -30,11 +30,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  purchasedCourses: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Course",
-    unique: true,
-  },
+  purchasedCourses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+    },
+  ],
 });
 
 const CourseSchema = new mongoose.Schema({
